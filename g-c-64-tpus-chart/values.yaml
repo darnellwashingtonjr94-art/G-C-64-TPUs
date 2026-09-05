@@ -1,0 +1,19 @@
+replicaCount: 1
+
+image:
+  repository: your_dockerhub_username/g-c-64-tpus
+  pullPolicy: Always
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources:
+  limits:
+    cloud-tpus.google.com/v4: 64 # Matches the 64-TPU architecture
+  requests:
+    cpu: "32"
+    memory: "128Gi"
+    cloud-tpus.google.com/v4: 64
