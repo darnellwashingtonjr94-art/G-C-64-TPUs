@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["AuthError"],"fn":["verify_token"],"struct":["AuthenticatedIdentity"]};
