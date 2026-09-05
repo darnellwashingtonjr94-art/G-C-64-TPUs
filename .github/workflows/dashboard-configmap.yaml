@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g-c-64-tpus-grafana-dashboard
+  namespace: default
+  labels:
+    grafana_dashboard: "1"
+data:
+  tpu-dashboard.json: |
+    {
+      "annotations": {
+        "list": []
+      },
+      "editable": true,
+      "panels": [
+        {
+          "title": "TPU Core Utilization",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+          "targets": [
+            {
+              "expr": "rate(tpu_core_utilization_total[1m])",
+              "legendFormat": "Core {{core}}"
+            }
+          ]
+        }
+      ],
+      "schemaVersion": 38,
+      "title": "G-C-64-TPUs Performance Metrics",
+      "version": 1
+    }
