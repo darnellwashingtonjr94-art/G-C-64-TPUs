@@ -1,0 +1,9 @@
+project: g_c_64_tpus_features
+provider: gcp
+offline_store:
+  type: postgres
+  connection_string: "postgresql://$(DB_USER):$(DB_PASSWORD)@postgres-service:5432/feast_offline"
+online_store:
+  type: redis
+  connection_string: "redis://redis-master.default.svc:6379"
+registry: gs://your-g-c-64-tpus-artifacts/feast-registry/registry.pb
