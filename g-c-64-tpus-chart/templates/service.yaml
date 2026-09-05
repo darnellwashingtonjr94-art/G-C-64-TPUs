@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "g-c-64-tpus.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "g-c-64-tpus.name" . }}
+    helm.sh/chart: {{ include "g-c-64-tpus.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "g-c-64-tpus.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
