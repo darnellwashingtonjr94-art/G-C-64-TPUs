@@ -1,0 +1,43 @@
+apiVersion: ray.io/v1
+kind: RayCluster
+metadata:
+  name: g-c-64-tpus-cluster
+  namespace: default
+spec:
+  rayVersion: "2.35.0"
+  headGroupSpec:
+    rayStartParams:
+      dashboard-host: "0.0.0.0"
+    template:
+      spec:
+        containers:
+          - name: ray-head
+            image: your_dockerhub_username/g-c-64-tpus:latest
+            resources:
+              limits:
+                cpu: "8"
+                memory: "32Gi"
+              requests:
+                cpu: "4"
+                memory: "16Gi"
+  workerGroupSpecs:
+    - groupName: tpu-workers
+      replicas: 16
+      minReplicas: 16
+      maxReplicas: 16
+      numOfHosts: 4
+      rayStartParams: {}
+      template:
+        spec:
+          containers:
+            - name: ray-worker
+              image: your_dockerhub_username/g-c-64-tpus:latest
+              resources:
+                limits:
+                  cloud-tpus.google.com/v4: 4
+                  cpu: "8"
+                  memory: "32Gi"
+                requests:
+                  cloud-tpus.google.com/v4: 4
+                  cpu: "4"
+                  memory: "16Gi"
