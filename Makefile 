@@ -1,0 +1,63 @@
+.PHONY: all argocd keda istio network-policy secrets mlflow velero inference workflow feast kuberay alerts verify clean
+
+all: argocd keda istio network-policy secrets mlflow velero inference workflow feast kuberay alerts verify
+	@echo "=== Full G-C-64-TPUs MLOps Stack Deployed Successfully ==="
+
+argocd:
+	@echo "Syncing ArgoCD application..."
+	@./sync-argocd.sh
+
+keda:
+	@echo "Configuring KEDA autoscaling..."
+	@./setup-keda.sh
+
+istio:
+	@echo "Applying Istio service mesh rules..."
+	@./apply-istio.sh
+
+network-policy:
+	@echo "Enforcing Kubernetes network policies..."
+	@./apply-network-policy.sh
+
+secrets:
+	@echo "Setting up External Secrets..."
+	@./setup-secrets.sh
+
+mlflow:
+	@echo "Deploying MLflow tracking server..."
+	@./deploy-mlflow.sh
+
+velero:
+	@echo "Configuring Velero backup schedules..."
+	@./deploy-velero.sh
+
+inference:
+	@echo "Deploying KServe inference service..."
+	@./deploy-inference.sh
+
+workflow:
+	@echo "Submitting Argo ML workflows..."
+	@./submit-workflow.sh
+
+feast:
+	@echo "Deploying Feast feature store..."
+	@./deploy-feast.sh
+
+kuberay:
+	@echo "Deploying KubeRay distributed training cluster..."
+	@./deploy-kuberay.sh
+
+alerts:
+	@echo "Configuring Prometheus alert rules..."
+	@./deploy-alerts.sh
+
+verify:
+	@echo "Running end-to-end stack validation..."
+	@./verify-stack.sh
+
+clean:
+	@echo "Tearing down cluster workloads..."
+	kubectl delete -f inferenceservice.yaml --ignore-not-found
+	kubectl delete -f raycluster-tpu.yaml --ignore-not-found
+	kubectl delete -f workflow.yaml --ignore-not-found
+	kubectl delete -f argocd-application.yaml --ignore-not-found
