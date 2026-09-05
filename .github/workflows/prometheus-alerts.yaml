@@ -1,0 +1,37 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: g-c-64-tpus-alerts
+  namespace: default
+  labels:
+    role: alert-rules
+spec:
+  groups:
+    - name: tpu-hardware-alerts
+      rules:
+        - alert: TPUCoreSaturation
+          expr: rate(tpu_core_utilization_total[5m]) > 0.95
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "TPU core utilization is critically high (>95%)"
+            description: "TPU cores on instance {{ $labels.instance }} have been running above 95% utilization for over 5 minutes."
+
+        - alert: TPUNodeUnavailable
+          expr: kube_node_status_condition{condition="Ready",status="false"} == 1 and on(node) kube_node_labels{label_cloud_tpus_google_com="v4"}
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "TPU node {{ $labels.node }} is not ready"
+            description: "A GKE node with TPU hardware attachments has entered a non-ready state."
+
+        - alert: ModelInferenceHighLatency
+          expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{service="g-c-64-tpus-inference"}[5m])) > 2.0
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: "KServe inference P99 latency exceeds 2 seconds"
+            description: "Inference response times are degraded for the production serving endpoint."
