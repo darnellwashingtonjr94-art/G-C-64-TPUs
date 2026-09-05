@@ -1,0 +1,17 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: tpu-worker-failure-simulation
+  namespace: default
+spec:
+  action: pod-failure
+  mode: fixed
+  value: "1"
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      ray.io/node-type: worker
+  duration: "30s"
+  scheduler:
+    cron: "@every 24h"
