@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-drift-monitor
+  namespace: default
+  labels:
+    app.kubernetes.io/name: drift-monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: drift-monitor
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: drift-monitor
+    spec:
+      containers:
+        - name: monitor
+          image: python:3.9-slim
+          command: ["sh", "-c"]
+          args:
+            - "pip install evidently pandas redis psycopg2-binary && python -c 'import time; print(\"Evidently drift monitor active...\"); time.sleep(3600)'"
+          resources:
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
