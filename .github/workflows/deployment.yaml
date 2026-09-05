@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: g-c-64-tpus-deployment
+  labels:
+    app: tpu-workload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tpu-workload
+  template:
+    metadata:
+      labels:
+        app: tpu-workload
+    spec:
+      containers:
+      - name: tpu-container
+        # Replace with your actual Docker Hub username
+        image: your_dockerhub_username/g-c-64-tpus:latest 
+        imagePullPolicy: Always
+        resources:
+          limits:
+            # Example resource request for Google Cloud TPUs
+            cloud-tpus.google.com/v2: 8 
