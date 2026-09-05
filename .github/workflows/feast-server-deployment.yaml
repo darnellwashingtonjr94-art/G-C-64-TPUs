@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feast-feature-server
+  namespace: default
+  labels:
+    app.kubernetes.io/name: feast-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: feast-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: feast-server
+    spec:
+      containers:
+        - name: feature-server
+          image: python:3.9-slim
+          command: ["sh", "-c"]
+          args:
+            - "pip install feast[gcp,redis,postgres] && feast serve --host 0.0.0.0 --port 6566"
+          ports:
+            - containerPort: 6566
+              name: http
+          resources:
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+            requests:
+              cpu: "1"
+              memory: "2Gi"
