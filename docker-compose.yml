@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  tpu-workload:
+    image: your_dockerhub_username/g-c-64-tpus:latest
+    build: .
+    container_name: g-c-64-tpus-container
+    restart: unless-stopped
+    environment:
+      - WORKLOAD_ENV=production
+    # volumes:
+    #   - ./data:/app/data
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: tpu
