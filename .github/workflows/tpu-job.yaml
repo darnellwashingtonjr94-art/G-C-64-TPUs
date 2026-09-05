@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: g-c-64-tpus-training-job
+spec:
+  backoffLimit: 3 # Number of retries before failing
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: tpu-training-container
+        image: your_dockerhub_username/g-c-64-tpus:latest
+        command: ["python", "train.py"] # Override default CMD if necessary
+        resources:
+          limits:
+            cloud-tpus.google.com/v2: 8
