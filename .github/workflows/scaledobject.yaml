@@ -1,0 +1,19 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: g-c-64-tpus-scaler
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: g-c-64-tpus-deployment
+  minReplicaCount: 0
+  maxReplicaCount: 4
+  cooldownPeriod: 300
+  pollingInterval: 30
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-stack-grafana.default.svc:80
+        metricName: tpu_core_utilization_total
+        query: rate(tpu_core_utilization_total[1m])
+        threshold: '75'
