@@ -1,0 +1,17 @@
+driver:
+  kind: ebpf
+
+tty: true
+
+json_output: true
+
+file_output:
+  enabled: false
+  keep_alive: false
+
+stdout_output:
+  enabled: true
+
+outputs:
+  rate: 1
+  max_burst: 100
