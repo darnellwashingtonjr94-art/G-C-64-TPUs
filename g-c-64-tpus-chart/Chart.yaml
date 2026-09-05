@@ -1,0 +1,6 @@
+apiVersion: v2
+name: g-c-64-tpus
+description: A Helm chart for deploying G-C-64-TPUs AI workloads on GKE
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
