@@ -1,0 +1,13 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: g-c-64-tpus-daily-backup
+  namespace: velero
+spec:
+  schedule: "0 2 * * *"
+  template:
+    includedNamespaces:
+      - default
+    snapshotVolumes: true
+    storageLocation: default
+    ttl: 168h
