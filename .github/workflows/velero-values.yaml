@@ -1,0 +1,30 @@
+configuration:
+  backupStorageLocation:
+    - name: default
+      provider: gcp
+      bucket: your-g-c-64-tpus-backups
+      config:
+        region: us-central2
+  volumeSnapshotLocation:
+    - name: default
+      provider: gcp
+      config:
+        region: us-central2
+
+initContainers:
+  - name: velero-plugin-for-gcp
+    image: velero/velero-plugin-for-gcp:v1.9.0
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+
+credentials:
+  useSecret: true
+  secretContents:
+    cloud: |
+      [default]
+      type = service_account
+      private_key_id = "your-private-key-id"
+      private_key = "-----BEGIN PRIVATE KEY-----\n..."
+      client_email = "velero@your-gcp-project.iam.gserviceaccount.com"
+      client_id = "your-client-id"
