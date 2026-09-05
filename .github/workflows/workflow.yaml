@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: g-c-64-tpus-ml-pipeline
+  namespace: default
+spec:
+  entrypoint: ml-pipeline-dag
+  templates:
+    - name: ml-pipeline-dag
+      dag:
+        tasks:
+          - name: preprocess
+            template: data-prep
+          - name: train
+            dependencies: [preprocess]
+            template: tpu-train
+          - name: evaluate
+            dependencies: [train]
+            template: model-eval
+
+    - name: data-prep
+      container:
+        image: python:3.9-slim
+        command: ["python", "-c"]
+        args: ["echo 'Preprocessing dataset for TPU training...'"]
+
+    - name: tpu-train
+      container:
+        image: your_dockerhub_username/g-c-64-tpus:latest
+        command: ["python", "train.py"]
+        resources:
+          limits:
+            cloud-tpus.google.com/v4: 8
+            cpu: "8"
+            memory: "32Gi"
+          requests:
+            cloud-tpus.google.com/v4: 8
+            cpu: "4"
+            memory: "16Gi"
+
+    - name: model-eval
+      container:
+        image: python:3.9-slim
+        command: ["python", "-c"]
+        args: ["echo 'Evaluating trained model performance...'"]
