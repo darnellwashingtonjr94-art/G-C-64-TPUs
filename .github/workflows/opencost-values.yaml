@@ -1,0 +1,11 @@
+opencost:
+  exporter:
+    image: opencost/opencost:latest
+    costModel:
+      cloudProvider: gcp
+      clusterId: g-c-64-tpus-cluster
+      spotLabel: cloud.google.com/gke-spot
+  prometheus:
+    metricNameMapping:
+      usedCpu: container_cpu_usage_seconds_total
+      usedMemory: container_memory_working_set_bytes
