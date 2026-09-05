@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "g-c-64-tpus.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "g-c-64-tpus.name" . }}
+    helm.sh/chart: {{ include "g-c-64-tpus.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "g-c-64-tpus.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "g-c-64-tpus.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: tpu-workload
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            limits:
+              cloud-tpus.google.com/v4: {{ .Values.resources.limits."cloud-tpus.google.com/v4" }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu | quote }}
+              memory: {{ .Values.resources.requests.memory | quote }}
+              cloud-tpus.google.com/v4: {{ .Values.resources.requests."cloud-tpus.google.com/v4" }}
