@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow-tracking-server
+  namespace: default
+  labels:
+    app.kubernetes.io/name: mlflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mlflow
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mlflow
+    spec:
+      containers:
+        - name: mlflow
+          image: ghcr.io/mlflow/mlflow:latest
+          command:
+            - mlflow
+            - server
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "5000"
+            - --backend-store-uri
+            - "postgresql://$(DB_USER):$(DB_PASSWORD)@postgres-service:5432/mlflow"
+            - --default-artifact-root
+            - "gs://your-g-c-64-tpus-artifacts/mlflow"
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: model-api-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: model-api-secret
+                  key: DB_PASSWORD
+          ports:
+            - containerPort: 5000
+              name: http
+          resources:
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+            requests:
+              cpu: "1"
+              memory: "2Gi"
