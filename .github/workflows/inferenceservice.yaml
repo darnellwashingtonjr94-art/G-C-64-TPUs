@@ -1,0 +1,20 @@
+apiVersion: "serving.kserve.io/v1beta1"
+kind: "InferenceService"
+metadata:
+  name: "g-c-64-tpus-inference"
+  namespace: default
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: tensorflow
+      storageUri: "gs://your-g-c-64-tpus-artifacts/models/latest"
+      resources:
+        limits:
+          cloud-tpus.google.com/v4: 8
+          cpu: "8"
+          memory: "32Gi"
+        requests:
+          cloud-tpus.google.com/v4: 8
+          cpu: "4"
+          memory: "16Gi"
